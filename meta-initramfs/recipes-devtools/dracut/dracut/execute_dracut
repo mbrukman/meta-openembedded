@@ -1,0 +1,21 @@
+#!/bin/sh
+
+if [ ! -f $OPKG_INTERCEPT_DIR/execute-dracut ]; then
+	KERNEL_VERSION=$1
+	shift
+	MY_KERNEL_VERSION=$(readlink /boot/bzimage | sed 's,^.*bzImage-,,')
+	if [[ -z "$MY_KERNEL_VERSION" ]]; then
+		if [[ -d /lib/modules/$KERNEL_VERSION ]]; then
+			MY_KERNEL_VERSION="${KERNEL_VERSION}"
+		fi
+	fi
+	[[ -z "$MY_KERNEL_VERSION" ]] && echo COULD NOT DETERMINE KERNEL VERSION TO RUN DEPMOD AND DRACUT && echo PLEASE DO IT MANUALLY && exit 0
+	cat <<EOF > $OPKG_INTERCEPT_DIR/execute-dracut
+echo RUNNING: depmod -a $MY_KERNEL_VERSION
+depmod -a $MY_KERNEL_VERSION
+echo RUNNING: dracut -f $@ /boot/initramfs.img $MY_KERNEL_VERSION
+echo "dracut: $(dracut --help | grep 'Version:')"
+dracut -f $@ /boot/initramfs.img $MY_KERNEL_VERSION
+EOF
+	chmod +x $OPKG_INTERCEPT_DIR/execute-dracut
+fi

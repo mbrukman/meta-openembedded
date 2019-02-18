@@ -12,6 +12,7 @@ PV = "049"
 SRCREV = "225e4b94cbdb702cf512490dcd2ad9ca5f5b22c1"
 SRC_URI = "git://git.kernel.org/pub/scm/boot/dracut/dracut.git;protocol=http \
            file://0001-util.h-include-sys-reg.h-when-libc-glibc.patch \
+           file://execute_dracut \
            "
 
 DEPENDS += "kmod"
@@ -49,11 +50,15 @@ do_install() {
     # Its Makefile uses cp -arx to install modules.d, so fix the owner
     # to root:root
     chown -R root:root ${D}/${prefix}/lib/dracut/modules.d
+
+    install -d -m0755 ${D}${datadir}/opkg/intercept
+    install -m0755 ${WORKDIR}/execute_dracut ${D}${datadir}/opkg/intercept
 }
 
 FILES_${PN} += "${prefix}/lib/kernel \
                 ${prefix}/lib/dracut \
                 ${systemd_unitdir} \
+                ${datadir}/opkg/intercept \
                "
 FILES_${PN}-dbg += "${prefix}/lib/dracut/.debug"
 
