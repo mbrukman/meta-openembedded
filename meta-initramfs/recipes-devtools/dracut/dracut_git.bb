@@ -6,11 +6,13 @@ LICENSE = "GPLv2"
 LIC_FILES_CHKSUM = "file://COPYING;md5=b234ee4d69f5fce4486a80fdaf4a4263"
 
 PE = "1"
-PV = "049"
+PV = "050"
+PR = "r0.alpha.rootfs"
 
-# v048 tag
-SRCREV = "225e4b94cbdb702cf512490dcd2ad9ca5f5b22c1"
-SRC_URI = "git://git.kernel.org/pub/scm/boot/dracut/dracut.git;protocol=http \
+# v049 tag plus run from a rootfs
+SRCBRANCH = "allow-separate-rootfs"
+SRCREV = "6fe40f64f923e61e17c9d3db06cf9bfe6e83a68a"
+SRC_URI = "git://github.com/zboszor/dracut.git;protocol=https;branch=${SRCBRANCH} \
            file://0001-util.h-include-sys-reg.h-when-libc-glibc.patch \
            file://execute_dracut \
            "
