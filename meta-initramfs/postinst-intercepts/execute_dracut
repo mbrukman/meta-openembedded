@@ -1,0 +1,17 @@
+#!/bin/sh
+
+set -e
+
+export \
+	prefix dracutsysrootdir \
+	systemdutildir systemdsystemunitdir systemdsystemconfdir udevdir \
+	DRACUT_ARCH DRACUT_TESTBIN DRACUT_LDD DRACUT_LDCONFIG \
+	DRACUT_COMPRESS_LZMA DRACUT_INSTALL DRACUT_INSTALL_PATH
+
+[[ -d $DRACUT_TMPDIR ]] || mkdir -p $DRACUT_TMPDIR
+
+echo RUNNING: depmod $DEPMODOPT -a $MY_KERNEL_VERSION
+depmod $DEPMODOPT -a $MY_KERNEL_VERSION
+echo "dracut: $(dracut --help | grep 'Version:')"
+echo RUNNING: dracut -f --tmpdir $DRACUT_TMPDIR $DRACUT_OPTS $DEBUGOPTS $EXTRAOPTS $D/boot/initramfs.img $MY_KERNEL_VERSION
+dracut -f --tmpdir $DRACUT_TMPDIR $DRACUT_OPTS $DEBUGOPTS $EXTRAOPTS $D/boot/initramfs.img $MY_KERNEL_VERSION
